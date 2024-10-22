@@ -5,6 +5,7 @@
         "code": "document.getElementById('id').style.color = 'red';"
     },
     {
+        "type": "Javascript",
         "command": "Ajouter un événement clic",
         "code": "document.getElementById('btn').addEventListener('click', function() { alert('Clic!'); });"
     }
