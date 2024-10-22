@@ -1,5 +1,6 @@
 [
     {
+        "type": "HTML",
         "command": "Changer la couleur du texte",
         "code": "<p style='color: red;'>Texte en rouge</p>"
     },
