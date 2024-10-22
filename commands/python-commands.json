@@ -1,0 +1,10 @@
+[
+    {
+        "command": "Changer la couleur du texte",
+        "code": "print('\\033[91mTexte en rouge\\033[0m')"
+    },
+    {
+        "command": "Boucle for",
+        "code": "for i in range(10): print(i)"
+    }
+]
