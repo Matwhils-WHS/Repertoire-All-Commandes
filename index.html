@@ -92,7 +92,7 @@
             renderCommands(languageFilter.value, searchInput.value);
         });
 
-        // Initialiser l'affichage après le chargement des commandes
+        // Initialiser l'affichage après le chargement des commandes 
         loadCommands().then(() => {
             renderCommands('all', '');
         }).catch(err => {
