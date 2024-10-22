@@ -1,43 +1,104 @@
-{
-    "window.zoomLevel": 0,
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter.notebook.ipynb"
-    },
-    "[python]": {
-        "editor.formatOnType": true
-    },
-    "editor.unicodeHighlight.allowedCharacters": {
-        "€": true,
-        "™": true,
-        "®": true,
-        "【": true,
-        "】": true,
-        "é": true,
-        "è": true
-    },
-    "editor.minimap.enabled": false,
-    "liveServer.settings.mount": [
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Répertoire des commandes de programmation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
+    <div class="container">
+        <h1>Répertoire des commandes de programmation</h1>
 
-    
-    ],
-    "liveServer.settings.port": 8080,
-    "liveServer.settings.host": "localhost",
-    "liveServer.settings.ignoreFiles": [
+        <div class="search-container">
+            <select id="language-filter">
+                <option value="all">Tous les langages</option>
+                <option value="HTML">HTML</option>
+                <option value="CSS">CSS</option>
+                <option value="JavaScript">JavaScript</option>
+                <option value="C++">C++</option>
+                <option value="Python">Python</option>
+            </select>
 
+            <input type="text" id="search" placeholder="Recherchez une commande...">
+        </div>
 
-        ".vscode/**",
-        "**/*.scss",
-        "**/*.sass",
-        "**/*.ts"
-    ],
-    "liveServer.settings.root": "",
-    "liveServer.settings.AdvanceCustomBrowserCmdLine": "",
-    "liveServer.settings.donotShowInfoMsg": true,
-    "liveServer.settings.https": {
-        "enable": true
-    },
-    "liveServer.settings.proxy": {
-        "enable": true
-    }
-}
+        <ul id="command-list" class="command-list"></ul>
+    </div>
+
+    <script>
+        const commands = {
+            HTML: [],
+            CSS: [],
+            JavaScript: [],
+            C: [],
+            Python: []
+        };
+
+        // Charger les commandes à partir des fichiers JSON
+        async function loadCommands() {
+            const languages = Object.keys(commands);
+            for (const lang of languages) {
+                const response = await fetch(`commands/${lang.toLowerCase()}-commands.json`);
+                commands[lang] = await response.json();
+            }
+        }
+
+        // Fonction pour échapper le code HTML
+        function escapeHTML(code) {
+            return code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // Filtrer et afficher les commandes
+        const searchInput = document.getElementById('search');
+        const languageFilter = document.getElementById('language-filter');
+        const commandList = document.getElementById('command-list');
+
+        function renderCommands(filter = '', searchQuery = '') {
+            let filteredCommands = [];
+            if (filter === 'all') {
+                for (const lang in commands) {
+                    filteredCommands = filteredCommands.concat(commands[lang]);
+                }
+            } else {
+                filteredCommands = commands[filter];
+            }
+
+            // Filtrer par recherche
+            filteredCommands = filteredCommands.filter(c => 
+                c.command.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+
+            // Trier par ordre alphabétique
+            filteredCommands.sort((a, b) => a.command.localeCompare(b.command));
+
+            // Afficher les commandes 
+            commandList.innerHTML = ''; // Efface les résultats précédents
+            filteredCommands.forEach(c => {
+                const commandItem = document.createElement('li');
+                commandItem.classList.add('command-item');
+                commandItem.innerHTML = `<strong>${c.type}:</strong> ${escapeHTML(c.command)}<br><code>${escapeHTML(c.code)}</code>`;
+                commandList.appendChild(commandItem);
+            });
+        }
+
+        // Écouter les changements
+        searchInput.addEventListener('input', function() {
+            renderCommands(languageFilter.value, searchInput.value);
+        });
+
+        languageFilter.addEventListener('change', function() {
+            renderCommands(languageFilter.value, searchInput.value);
+        });
+
+        // Initialiser l'affichage après le chargement des commandes
+        loadCommands().then(() => {
+            renderCommands('all', '');
+        }).catch(err => {
+            console.error('Erreur lors du chargement des commandes:', err);
+        });
+    </script>
+
+</body>
+</html>
