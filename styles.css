@@ -42,14 +42,14 @@ select, input[type="text"] {
 .command-item {
     padding: 15px;
     margin-bottom: 10px;
-    background-color: #9e9e9e;
+    background-color: #ffffff;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .command-item code {
     display: block;
-    background-color: #9c9c9c;
+    background-color: #fae6e6;
     padding: 10px;
     border-radius: 5px;
     margin-top: 5px;
