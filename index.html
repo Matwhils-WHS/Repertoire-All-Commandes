@@ -37,48 +37,54 @@
         };
 
         // Charger les commandes à partir des fichiers JSON
-async function loadCommands() {
-    const languages = Object.keys(commands);
-    for (const lang of languages) {
-        const response = await fetch(`commands/${lang.toLowerCase()}-commands.json`);
-        commands[lang] = await response.json();
-    }
-}
-
-// Filtrer et afficher les commandes
-function renderCommands(filter = '', searchQuery = '') {
-    let filteredCommands = [];
-    
-    // Récupère les commandes selon le filtre
-    if (filter === 'all') {
-        for (const lang in commands) {
-            filteredCommands = filteredCommands.concat(commands[lang]);
+        async function loadCommands() {
+            const languages = Object.keys(commands);
+            for (const lang of languages) {
+                const response = await fetch(`commands/${lang.toLowerCase()}-commands.json`);
+                commands[lang] = await response.json();
+            }
         }
-    } else {
-        filteredCommands = commands[filter];
-    }
 
-    // Filtrer par recherche
-    filteredCommands = filteredCommands.filter(c => 
-        c.command.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+        // Fonction pour échapper le code HTML
+        function escapeHTML(code) {
+            return code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
 
-    // Trier par ordre alphabétique
-    filteredCommands.sort((a, b) => a.command.localeCompare(b.command));
+        // Filtrer et afficher les commandes
+        function renderCommands(filter = '', searchQuery = '') {
+            let filteredCommands = [];
+            
+            // Récupère les commandes selon le filtre
+            if (filter === 'all') {
+                for (const lang in commands) {
+                    filteredCommands = filteredCommands.concat(commands[lang]);
+                }
+            } else {
+                filteredCommands = commands[filter];
+            }
 
-    // Afficher les commandes
-    commandList.innerHTML = ''; // Efface les résultats précédents
-    filteredCommands.forEach(c => {
-        const commandItem = document.createElement('li');
-        commandItem.classList.add('command-item');
-        commandItem.innerHTML = `<strong>${c.type}:</strong> ${c.command}<br><code>${escapeHTML(c.code)}</code>`;
-        commandList.appendChild(commandItem);
-    });
-}
+            // Filtrer par recherche
+            filteredCommands = filteredCommands.filter(c => 
+                c.command.toLowerCase().includes(searchQuery.toLowerCase())
+            );
 
+            // Trier par ordre alphabétique
+            filteredCommands.sort((a, b) => a.command.localeCompare(b.command));
 
+            // Afficher les commandes
+            commandList.innerHTML = ''; // Efface les résultats précédents
+            filteredCommands.forEach(c => {
+                const commandItem = document.createElement('li');
+                commandItem.classList.add('command-item');
+                commandItem.innerHTML = `<strong>${c.type}:</strong> ${c.command}<br><code>${escapeHTML(c.code)}</code>`;
+                commandList.appendChild(commandItem);
+            });
+        }
 
         // Écouter les changements
+        const searchInput = document.getElementById('search');
+        const languageFilter = document.getElementById('language-filter');
+
         searchInput.addEventListener('input', function() {
             renderCommands(languageFilter.value, searchInput.value);
         });
