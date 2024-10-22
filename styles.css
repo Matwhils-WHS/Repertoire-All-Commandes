@@ -9,7 +9,7 @@ body {
     width: 80%;
     margin: 40px auto;
     padding: 20px;
-    background-color: #e4d1d1;
+    background-color: grey;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
