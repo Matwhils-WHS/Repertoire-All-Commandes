@@ -1,0 +1,10 @@
+[
+    {
+        "command": "Changer la couleur du texte",
+        "code": "<p style='color: red;'>Texte en rouge</p>"
+    },
+    {
+        "command": "Ajouter une image",
+        "code": "<img src='image.jpg' alt='description'>"
+    }
+]
