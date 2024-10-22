@@ -78,7 +78,7 @@
             filteredCommands.forEach(c => {
                 const commandItem = document.createElement('li');
                 commandItem.classList.add('command-item');
-                commandItem.innerHTML = `<strong>${c.type}:</strong> ${c.comand}<br><code>${escapeHTML(c.code)}</code>`;
+                commandItem.innerHTML = `<strong>${c.type}:</strong> ${escapeHTML(c.comand)}<br><code>${escapeHTML(c.code)}</code>`;
                 commandList.appendChild(commandItem);
             });
         }
