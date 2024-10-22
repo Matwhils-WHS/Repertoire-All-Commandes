@@ -50,38 +50,37 @@
             return code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        // Filtrer et afficher les commandes
-        const searchInput = document.getElementById('search');
-        const languageFilter = document.getElementById('language-filter');
-        const commandList = document.getElementById('command-list');
-
-        function renderCommands(filter = '', searchQuery = '') {
-            let filteredCommands = [];
-            if (filter === 'all') {
-                for (const lang in commands) {
-                    filteredCommands = filteredCommands.concat(commands[lang]);
-                }
-            } else {
-                filteredCommands = commands[filter];
-            }
-
-            // Filtrer par recherche
-            filteredCommands = filteredCommands.filter(c => 
-                c.command.toLowerCase().includes(searchQuery.toLowerCase())
-            );
-
-            // Trier par ordre alphabétique
-            filteredCommands.sort((a, b) => a.command.localeCompare(b.command));
-
-            // Afficher les commandes
-            commandList.innerHTML = ''; // Efface les résultats précédents
-            filteredCommands.forEach(c => {
-                const commandItem = document.createElement('li');
-                commandItem.classList.add('command-item');
-                commandItem.innerHTML = `<strong>${filter}:</strong> ${c.command}<br><code>${escapeHTML(c.code)}</code>`;
-                commandList.appendChild(commandItem);
-            });
+// Filtrer et afficher les commandes
+function renderCommands(filter = '', searchQuery = '') {
+    let filteredCommands = [];
+    
+    // Récupère les commandes selon le filtre
+    if (filter === 'all') {
+        for (const lang in commands) {
+            filteredCommands = filteredCommands.concat(commands[lang].map(command => ({ ...command, language: lang })));
         }
+    } else {
+        filteredCommands = commands[filter].map(command => ({ ...command, language: filter }));
+    }
+
+    // Filtrer par recherche
+    filteredCommands = filteredCommands.filter(c => 
+        c.command.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Trier par ordre alphabétique
+    filteredCommands.sort((a, b) => a.command.localeCompare(b.command));
+
+    // Afficher les commandes
+    commandList.innerHTML = ''; // Efface les résultats précédents
+    filteredCommands.forEach(c => {
+        const commandItem = document.createElement('li');
+        commandItem.classList.add('command-item');
+        commandItem.innerHTML = `<strong>${c.language}:</strong> ${c.command}<br><code>${escapeHTML(c.code)}</code>`;
+        commandList.appendChild(commandItem);
+    });
+}
+
 
         // Écouter les changements
         searchInput.addEventListener('input', function() {
