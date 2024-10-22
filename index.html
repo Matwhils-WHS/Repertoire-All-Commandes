@@ -67,7 +67,7 @@
 
             // Filtrer par recherche
             filteredCommands = filteredCommands.filter(c => 
-                c.command.toLowerCase().includes(searchQuery.toLowerCase())
+                {escapeHTML(c.command.toLowerCase().includes(searchQuery.toLowerCase()))
             );
 
             // Trier par ordre alphabétique
