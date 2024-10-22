@@ -1,5 +1,6 @@
 [
     {
+        "type": "PYTHON",
         "command": "Changer la couleur du texte",
         "code": "print('\\033[91mTexte en rouge\\033[0m')"
     },
