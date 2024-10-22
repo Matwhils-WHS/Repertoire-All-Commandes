@@ -1,11 +1,11 @@
 [
     {
-        "type": "CPP",
+        "type": "C++",
         "command": "Changer la couleur du texte",
         "code": "// Utilisation des bibliothèques spécifiques à ton IDE"
     },
     {
-        "type": "CPP",
+        "type": "C++",
         "command": "Boucle for",
         "code": "for(int i = 0; i < 10; i++) { cout << i; }"
     }
