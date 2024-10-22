@@ -5,6 +5,7 @@
         "code": "<p style='color: red;'>Texte en rouge</p>"
     },
     {
+        "type": "HTML",
         "command": "Ajouter une image",
         "code": "<img src='image.jpg' alt='description'>"
     }
