@@ -73,7 +73,7 @@
             // Trier par ordre alphabétique
             filteredCommands.sort((a, b) => a.command.localeCompare(b.command));
 
-            // Afficher les commandes
+            // Afficher les commandes 
             commandList.innerHTML = ''; // Efface les résultats précédents
             filteredCommands.forEach(c => {
                 const commandItem = document.createElement('li');
