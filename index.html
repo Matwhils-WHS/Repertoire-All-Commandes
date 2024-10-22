@@ -51,10 +51,12 @@
         }
 
         // Filtrer et afficher les commandes
+        const searchInput = document.getElementById('search');
+        const languageFilter = document.getElementById('language-filter');
+        const commandList = document.getElementById('command-list');
+
         function renderCommands(filter = '', searchQuery = '') {
             let filteredCommands = [];
-            
-            // Récupère les commandes selon le filtre
             if (filter === 'all') {
                 for (const lang in commands) {
                     filteredCommands = filteredCommands.concat(commands[lang]);
@@ -76,15 +78,12 @@
             filteredCommands.forEach(c => {
                 const commandItem = document.createElement('li');
                 commandItem.classList.add('command-item');
-                commandItem.innerHTML = `<strong>${c.type}:</strong> ${c.command}<br><code>${escapeHTML(c.code)}</code>`;
+                commandItem.innerHTML = `<strong>${filter}:</strong> ${c.command}<br><code>${escapeHTML(c.code)}</code>`;
                 commandList.appendChild(commandItem);
             });
         }
 
         // Écouter les changements
-        const searchInput = document.getElementById('search');
-        const languageFilter = document.getElementById('language-filter');
-
         searchInput.addEventListener('input', function() {
             renderCommands(languageFilter.value, searchInput.value);
         });
