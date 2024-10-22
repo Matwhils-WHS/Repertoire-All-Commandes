@@ -1,0 +1,10 @@
+[
+    {
+        "command": "Changer la couleur du texte",
+        "code": "document.getElementById('id').style.color = 'red';"
+    },
+    {
+        "command": "Ajouter un événement clic",
+        "code": "document.getElementById('btn').addEventListener('click', function() { alert('Clic!'); });"
+    }
+]
