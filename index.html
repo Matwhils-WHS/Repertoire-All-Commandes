@@ -13,21 +13,46 @@
         }
         .container {
             width: 80%;
-            margin: auto;
+            margin: 40px auto;
             padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
         }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .search-container {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 20px;
-            font-size: 16px;
         }
-        .command-result {
-            background-color: #fff;
+        select, input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 48%;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .command-list {
+            list-style: none;
+            padding: 0;
+        }
+        .command-item {
             padding: 15px;
             margin-bottom: 10px;
+            background-color: #f9f9f9;
             border-radius: 5px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .command-item code {
+            display: block;
+            background-color: #eaeaea;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -35,33 +60,77 @@
 
     <div class="container">
         <h1>Répertoire des commandes de programmation</h1>
-        <input type="text" id="search" placeholder="Recherchez une commande...">
-        <div id="results"></div>
+
+        <div class="search-container">
+            <!-- Menu déroulant pour choisir le langage -->
+            <select id="language-filter">
+                <option value="all">Tous les langages</option>
+                <option value="HTML">HTML</option>
+                <option value="CSS">CSS</option>
+                <option value="JavaScript">JavaScript</option>
+                <option value="C++">C++</option>
+                <option value="Python">Python</option>
+            </select>
+
+            <!-- Barre de recherche -->
+            <input type="text" id="search" placeholder="Recherchez une commande...">
+        </div>
+
+        <!-- Liste des commandes -->
+        <ul id="command-list" class="command-list"></ul>
     </div>
 
     <script>
+        // Liste des commandes, triée par ordre alphabétique
         const commands = [
             { language: "HTML", command: "Changer la couleur du texte", code: "<p style='color: red;'>Texte en rouge</p>" },
             { language: "CSS", command: "Changer la couleur du texte", code: "p { color: red; }" },
             { language: "JavaScript", command: "Changer la couleur du texte", code: "document.getElementById('id').style.color = 'red';" },
+            { language: "C++", command: "Changer la couleur du texte", code: "// Utilisation des bibliothèques spécifiques à ton IDE" },
             { language: "Python", command: "Changer la couleur du texte", code: "print('\\033[91mTexte en rouge\\033[0m')" },
+            { language: "HTML", command: "Ajouter une image", code: "<img src='image.jpg' alt='description'>" },
+            { language: "CSS", command: "Changer la taille du texte", code: "p { font-size: 20px; }" },
+            { language: "JavaScript", command: "Ajouter un événement clic", code: "document.getElementById('btn').addEventListener('click', function() { alert('Clic!'); });" },
+            { language: "C++", command: "Boucle for", code: "for(int i = 0; i < 10; i++) { cout << i; }" },
+            { language: "Python", command: "Boucle for", code: "for i in range(10): print(i)" }
         ];
 
+        // Filtrer et afficher les commandes
         const searchInput = document.getElementById('search');
-        const resultsContainer = document.getElementById('results');
+        const languageFilter = document.getElementById('language-filter');
+        const commandList = document.getElementById('command-list');
 
-        searchInput.addEventListener('input', function() {
-            const query = searchInput.value.toLowerCase();
-            resultsContainer.innerHTML = '';  // Efface les résultats précédents
+        function renderCommands(filter = '', searchQuery = '') {
+            // Filtrer les commandes par langage et recherche
+            let filteredCommands = commands.filter(c => 
+                (filter === 'all' || c.language === filter) &&
+                c.command.toLowerCase().includes(searchQuery.toLowerCase())
+            );
 
-            const filteredCommands = commands.filter(c => c.command.toLowerCase().includes(query));
+            // Trier les commandes par ordre alphabétique
+            filteredCommands.sort((a, b) => a.command.localeCompare(b.command));
+
+            // Afficher les commandes
+            commandList.innerHTML = ''; // Efface les résultats précédents
             filteredCommands.forEach(c => {
-                const resultDiv = document.createElement('div');
-                resultDiv.classList.add('command-result');
-                resultDiv.innerHTML = `<strong>${c.language}</strong>: ${c.command}<br><code>${c.code}</code>`;
-                resultsContainer.appendChild(resultDiv);
+                const commandItem = document.createElement('li');
+                commandItem.classList.add('command-item');
+                commandItem.innerHTML = `<strong>${c.language}:</strong> ${c.command}<br><code>${c.code}</code>`;
+                commandList.appendChild(commandItem);
             });
+        }
+
+        // Écouter les changements dans le menu déroulant et la barre de recherche
+        searchInput.addEventListener('input', function() {
+            renderCommands(languageFilter.value, searchInput.value);
         });
+
+        languageFilter.addEventListener('change', function() {
+            renderCommands(languageFilter.value, searchInput.value);
+        });
+
+        // Initialiser l'affichage
+        renderCommands('all', '');
     </script>
 
 </body>
