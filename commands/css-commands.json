@@ -1,0 +1,10 @@
+[
+    {
+        "command": "Changer la couleur du texte",
+        "code": "p { color: red; }"
+    },
+    {
+        "command": "Changer la taille du texte",
+        "code": "p { font-size: 20px; }"
+    }
+]
