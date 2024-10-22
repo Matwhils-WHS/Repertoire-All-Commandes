@@ -53,5 +53,5 @@ select, input[type="text"] {
     padding: 10px;
     border-radius: 5px;
     margin-top: 5px;
-    white-space: pre-wrap; /*  Pour préserver les espaces et les sauts de ligne */
+    white-space: pre-wrap; /* Pour préserver les espaces et les sauts de ligne */
 }
