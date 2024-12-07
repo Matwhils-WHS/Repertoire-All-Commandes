@@ -93,7 +93,7 @@
             commandList.innerHTML = '';
             filteredCommands.forEach(c => {
                 const listItem = document.createElement('li');
-                listItem.innerHTML = `<strong>${c.type}:</strong> ${c.command}<br><code>${escapeHTML(c.code)}</code>`;
+                listItem.innerHTML = `<strong>${c.type}:</strong> ${c.command}<br><code class="container">${escapeHTML(c.code)}</code>`;
                 commandList.appendChild(listItem);
             });
         }
