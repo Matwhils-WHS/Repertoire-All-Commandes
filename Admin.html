@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Page d'administration</h1>
+
+        <!-- Formulaire de connexion -->
+        <div id="login-section">
+            <p>Veuillez entrer le mot de passe pour accéder à la zone d'administration :</p>
+            <input type="password" id="admin-password" placeholder="Mot de passe">
+            <button id="login-button">Se connecter</button>
+        </div>
+
+        <!-- Zone d'administration (cachée par défaut) -->
+        <div id="admin-section" style="display: none;">
+            <h2>Gestion des commandes</h2>
+            <form id="add-command-form">
+                <select id="command-language">
+                    <option value="HTML">HTML</option>
+                    <option value="CSS">CSS</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="C">C++</option>
+                    <option value="Python">Python</option>
+                </select>
+                <input type="text" id="command-name" placeholder="Nom de la commande" required>
+                <textarea id="command-code" placeholder="Code de la commande" required></textarea>
+                <button type="submit">Ajouter</button>
+            </form>
+
+            <h2>Liste des commandes</h2>
+            <ul id="command-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        const correctPassword = "admin123"; // Mot de passe sécurisé
+
+        // Vérifier le mot de passe
+        document.getElementById('login-button').addEventListener('click', () => {
+            const passwordInput = document.getElementById('admin-password').value;
+            if (passwordInput === correctPassword) {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('admin-section').style.display = 'block';
+            } else {
+                alert("Mot de passe incorrect !");
+            }
+        });
+
+        // Ajouter une commande (comme dans index.html)
+        const commands = {
+            HTML: [],
+            CSS: [],
+            JavaScript: [],
+            C: [],
+            Python: []
+        };
+
+        document.getElementById('add-command-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const language = document.getElementById('command-language').value;
+            const name = document.getElementById('command-name').value.trim();
+            const code = document.getElementById('command-code').value.trim();
+
+            if (!name || !code) {
+                alert("Veuillez remplir tous les champs !");
+                return;
+            }
+
+            const newCommand = {
+                type: language,
+                command: name,
+                code: code
+            };
+
+            commands[language].push(newCommand);
+
+            // Afficher les commandes mises à jour
+            renderCommands();
+
+            // Réinitialiser le formulaire
+            document.getElementById('add-command-form').reset();
+            alert("Commande ajoutée avec succès !");
+        });
+
+        // Fonction pour afficher les commandes
+        function renderCommands() {
+            const commandList = document.getElementById('command-list');
+            commandList.innerHTML = '';
+
+            for (const lang in commands) {
+                commands[lang].forEach(c => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<strong>${c.type}:</strong> ${c.command} <button class="delete-button">Supprimer</button>`;
+                    commandList.appendChild(listItem);
+
+                    // Supprimer une commande
+                    listItem.querySelector('.delete-button').addEventListener('click', () => {
+                        const index = commands[lang].indexOf(c);
+                        if (index > -1) {
+                            commands[lang].splice(index, 1);
+                        }
+                        renderCommands();
+                    });
+                });
+            }
+        }
+    </script>
+</body>
+</html>
