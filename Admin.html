@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -21,7 +20,10 @@
         <!-- Zone d'administration (cachée par défaut) -->
         <div id="admin-section" style="display: none;">
             <h2>Gestion des commandes</h2>
+
+            <!-- Formulaire pour ajouter une commande -->
             <form id="add-command-form">
+                <label for="command-language">Langage :</label>
                 <select id="command-language">
                     <option value="HTML">HTML</option>
                     <option value="CSS">CSS</option>
@@ -29,8 +31,13 @@
                     <option value="C">C++</option>
                     <option value="Python">Python</option>
                 </select>
+                <br>
+                <label for="command-name">Nom de la commande :</label>
                 <input type="text" id="command-name" placeholder="Nom de la commande" required>
+                <br>
+                <label for="command-code">Code de la commande :</label>
                 <textarea id="command-code" placeholder="Code de la commande" required></textarea>
+                <br>
                 <button type="submit">Ajouter</button>
             </form>
 
@@ -40,7 +47,8 @@
     </div>
 
     <script>
-        const correctPassword = "<Admin123"; // Mot de passe sécurisé
+        const correctPassword = "<Qdmin123"; // Mot de passe sécurisé
+        let commands = {};
 
         // Vérifier le mot de passe
         document.getElementById('login-button').addEventListener('click', () => {
@@ -48,20 +56,70 @@
             if (passwordInput === correctPassword) {
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('admin-section').style.display = 'block';
+                loadCommands(); // Charger les commandes une fois connecté
             } else {
                 alert("Mot de passe incorrect !");
             }
         });
 
-        // Ajouter une commande (comme dans index.html)
-        const commands = {
-            HTML: [],
-            CSS: [],
-            JavaScript: [],
-            C: [],
-            Python: []
-        };
+        // Charger les commandes depuis les fichiers JSON
+        async function loadCommands() {
+            try {
+                const htmlResponse = await fetch('html-commands.json');
+                const cssResponse = await fetch('css-commands.json');
+                const jsResponse = await fetch('js-commands.json');
+                const cppResponse = await fetch('cpp-commands.json');
+                const pythonResponse = await fetch('python-commands.json');
 
+                const htmlCommands = await htmlResponse.json();
+                const cssCommands = await cssResponse.json();
+                const jsCommands = await jsResponse.json();
+                const cppCommands = await cppResponse.json();
+                const pythonCommands = await pythonResponse.json();
+
+                commands = {
+                    HTML: htmlCommands,
+                    CSS: cssCommands,
+                    JavaScript: jsCommands,
+                    C: cppCommands,
+                    Python: pythonCommands
+                };
+
+                renderCommands();
+            } catch (error) {
+                console.error("Erreur lors du chargement des commandes :", error);
+            }
+        }
+
+        // Fonction pour afficher les commandes
+        function renderCommands() {
+            const commandList = document.getElementById('command-list');
+            commandList.innerHTML = ''; // Réinitialiser la liste
+
+            for (const lang in commands) {
+                commands[lang].forEach((command, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <strong>${command.type}:</strong> ${command.command}
+                        <pre>${command.code}</pre>
+                        <button class="delete-button" data-lang="${lang}" data-index="${index}">Supprimer</button>
+                    `;
+                    commandList.appendChild(listItem);
+                });
+            }
+
+            // Ajouter des événements pour les boutons "Supprimer"
+            document.querySelectorAll('.delete-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const lang = button.getAttribute('data-lang');
+                    const index = button.getAttribute('data-index');
+                    commands[lang].splice(index, 1); // Supprimer la commande
+                    renderCommands(); // Rafraîchir l'affichage
+                });
+            });
+        }
+
+        // Ajouter une commande
         document.getElementById('add-command-form').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -82,108 +140,10 @@
 
             commands[language].push(newCommand);
 
-            // Afficher les commandes mises à jour
             renderCommands();
-
-            // Réinitialiser le formulaire
             document.getElementById('add-command-form').reset();
             alert("Commande ajoutée avec succès !");
         });
-
-        // Fonction pour afficher les commandes
-        function renderCommands() {
-            const commandList = document.getElementById('command-list');
-            commandList.innerHTML = '';
-
-            for (const lang in commands) {
-                commands[lang].forEach(c => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `<strong>${c.type}:</strong> <p class="command-item">${c.command}</p> <button class="delete-button">Supprimer</button>`;
-                    commandList.appendChild(listItem);
-
-                    // Supprimer une commande
-                    listItem.querySelector('.delete-button').addEventListener('click', () => {
-                        const index = commands[lang].indexOf(c);
-                        if (index > -1) {
-                            commands[lang].splice(index, 1);
-                        }
-                        renderCommands();
-                    });
-                });
-            }
-        }
-
-        // Objet pour stocker les commandes
-let commands = {};
-
-// Charger les commandes depuis les fichiers JSON
-async function loadCommands() {
-    try {
-        const htmlResponse = await fetch('html-commands.json');
-        const cssResponse = await fetch('css-commands.json');
-        const jsResponse = await fetch('js-commands.json');
-        const cppResponse = await fetch('cpp-commands.json');
-        const pythonResponse = await fetch('python-commands.json');
-
-        const htmlCommands = await htmlResponse.json();
-        const cssCommands = await cssResponse.json();
-        const jsCommands = await jsResponse.json();
-        const cppCommands = await cppResponse.json();
-        const pythonCommands = await pythonResponse.json();
-
-        // Remplir l'objet `commands` avec les données chargées
-        commands = {
-            HTML: htmlCommands,
-            CSS: cssCommands,
-            JavaScript: jsCommands,
-            C: cppCommands,
-            Python: pythonCommands
-        };
-
-        // Afficher les commandes une fois chargées
-        renderCommands();
-    } catch (error) {
-        console.error("Erreur lors du chargement des commandes :", error);
-    }
-}
-
-// Fonction pour afficher les commandes
-function renderCommands() {
-    const commandList = document.getElementById('command-list');
-    commandList.innerHTML = ''; // Réinitialiser la liste
-
-    // Parcourir chaque langage et afficher les commandes
-    for (const lang in commands) {
-        commands[lang].forEach((command, index) => {
-            const listItem = document.createElement('li');
-            listItem.innerHTML = `
-                <strong>${command.type}:</strong> ${command.command}
-                <pre>${command.code}</pre>
-                <button class="delete-button" data-lang="${lang}" data-index="${index}">Supprimer</button>
-            `;
-            commandList.appendChild(listItem);
-        });
-    }
-
-    // Ajouter des événements pour les boutons "Supprimer"
-    document.querySelectorAll('.delete-button').forEach(button => {
-        button.addEventListener('click', () => {
-            const lang = button.getAttribute('data-lang');
-            const index = button.getAttribute('data-index');
-            commands[lang].splice(index, 1); // Supprimer la commande
-            renderCommands(); // Rafraîchir l'affichage
-        });
-    });
-}
-
-// Appeler la fonction pour charger les commandes au chargement de la page
-document.addEventListener('DOMContentLoaded', () => {
-    loadCommands();
-});
-
-        
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
