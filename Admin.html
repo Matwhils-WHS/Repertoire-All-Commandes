@@ -150,6 +150,69 @@
             document.getElementById('add-command-form').reset(); // Réinitialiser le formulaire
             alert("Commande ajoutée avec succès !");
         });
+
+     // Charger les commandes depuis les fichiers JSON
+        async function loadCommands() {
+            const languages = Object.keys(commands);
+            for (const lang of languages) {
+                try {
+                    const response = await fetch(`commands/${lang.toLowerCase()}-commands.json`);
+                    if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+                    commands[lang] = await response.json();
+                } catch (error) {
+                    console.error(`Erreur lors du chargement des commandes pour ${lang}:`, error);
+                }
+            }
+        }
+
+        // Fonction pour afficher les commandes
+        function renderCommands(filter = 'all', searchQuery = '') {
+            let filteredCommands = [];
+
+            if (filter === 'all') {
+                for (const lang in commands) {
+                    filteredCommands = filteredCommands.concat(commands[lang]);
+                }
+            } else {
+                filteredCommands = commands[filter];
+            }
+
+            filteredCommands = filteredCommands.filter(c =>
+                c.command.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+
+            filteredCommands.sort((a, b) => a.command.localeCompare(b.command));
+
+            const commandList = document.getElementById('command-list');
+            commandList.innerHTML = '';
+            filteredCommands.forEach(c => {
+                const listItem = document.createElement('li.container');
+                listItem.innerHTML = `<strong>${c.type}:</strong> ${c.command}<br><code><p class="command-item">${escapeHTML(c.code)}</p></code>`;
+                commandList.appendChild(listItem);
+            });
+        }
+
+        // Fonction pour échapper le code HTML
+        function escapeHTML(code) {
+            return code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // Gestion des événements pour recherche et filtre
+        document.getElementById('search').addEventListener('input', function() {
+            renderCommands(document.getElementById('language-filter').value, this.value);
+        });
+
+        document.getElementById('language-filter').addEventListener('change', function() {
+            renderCommands(this.value, document.getElementById('search').value);
+        });
+
+        // Charger et afficher les commandes au démarrage
+        loadCommands().then(() => {
+            renderCommands('all', '');
+        }).catch(err => {
+            console.error("Erreur lors du chargement initial des commandes:", err);
+        });
+        
     </script>
 </body>
 </html>
