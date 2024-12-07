@@ -102,6 +102,23 @@
             console.error('Erreur lors du chargement des commandes:', err);
         });
     </script>
+
+    <div class="container add-command-container">
+            <h2>Ajouter une Commande</h2>
+            <form id="add-command-form">
+                <select id="command-language">
+                    <option value="HTML">HTML</option>
+                    <option value="CSS">CSS</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="C">C++</option>
+                    <option value="Python">Python</option>
+                </select>
+                <input type="text" id="command-name" placeholder="Nom de la commande" required="">
+                <textarea id="command-code" placeholder="Code de la commande" required="" style="height: 68px;"></textarea>
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    
 <a href="https://github.com/Matwhils-WHS/Repertoire-All-Commandes">
     Github
 </a>
