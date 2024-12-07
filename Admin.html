@@ -1,107 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Commandes</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin-bottom: 15px;
-            background: #f9f9f9;
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-        pre {
-            background: #efefef;
-            padding: 5px;
-            border-radius: 3px;
-        }
-        button {
-            background-color: #ff4c4c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-        button:hover {
-            background-color: #e04343;
-        }
-        #add-command {
-            margin-top: 20px;
-            padding: 10px;
-            background: #4caf50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-        #add-command:hover {
-            background: #45a049;
-        }
-        .input-group {
-            margin-bottom: 10px;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .input-group input, .input-group select, .input-group textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-    </style>
+    <title>Administration</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Admin - Gestion des Commandes</h1>
-    <ul id="command-list"></ul>
-    <hr>
-    <h2>Ajouter une Commande</h2>
-    <div class="input-group">
-        <label for="language">Langage :</label>
-        <select id="language">
-            <option value="HTML">HTML</option>
-            <option value="CSS">CSS</option>
-            <option value="JavaScript">JavaScript</option>
-            <option value="C">C++</option>
-            <option value="Python">Python</option>
-        </select>
+    <div class="container">
+        <h1>Page d'administration</h1>
+
+        <!-- Formulaire de connexion -->
+        <div id="login-section">
+            <p>Veuillez entrer le mot de passe pour accéder à la zone d'administration :</p>
+            <input type="password" id="admin-password" placeholder="Mot de passe">
+            <button id="login-button">Se connecter</button>
+        </div>
+
+        <!-- Zone d'administration (cachée par défaut) -->
+        <div id="admin-section" style="display: none;">
+            <h2>Gestion des commandes</h2>
+
+            <!-- Formulaire pour ajouter une commande -->
+            <form id="add-command-form">
+                <label for="command-language">Langage :</label>
+                <select id="command-language">
+                    <option value="HTML">HTML</option>
+                    <option value="CSS">CSS</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="C">C++</option>
+                    <option value="Python">Python</option>
+                </select>
+                <br>
+                <label for="command-name">Nom de la commande :</label>
+                <input type="text" id="command-name" placeholder="Nom de la commande" required>
+                <br>
+                <label for="command-code">Code de la commande :</label>
+                <textarea id="command-code" placeholder="Code de la commande" required></textarea>
+                <br>
+                <button type="submit">Ajouter</button>
+            </form>
+
+            <h2>Liste des commandes</h2>
+            <ul id="command-list"></ul>
+        </div>
     </div>
-    <div class="input-group">
-        <label for="command-name">Nom de la commande :</label>
-        <input type="text" id="command-name" placeholder="Exemple : Changer la couleur du texte">
-    </div>
-    <div class="input-group">
-        <label for="command-code">Code :</label>
-        <textarea id="command-code" rows="4" placeholder="Exemple : &lt;p style='color: red;'&gt;Texte rouge&lt;/p&gt;"></textarea>
-    </div>
-    <button id="add-command">Ajouter la Commande</button>
-    
+
     <script>
-        let commands = {};
+        const correctPassword = "<Qdmin123"; // Mot de passe sécurisé
+        let commands = {
+            HTML: [],
+            CSS: [],
+            JavaScript: [],
+            C: [],
+            Python: []
+        };
+
+        // Vérifier le mot de passe
+        document.getElementById('login-button').addEventListener('click', () => {
+            const passwordInput = document.getElementById('admin-password').value;
+            if (passwordInput === correctPassword) {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('admin-section').style.display = 'block';
+                loadCommands(); // Charger les commandes une fois connecté
+            } else {
+                alert("Mot de passe incorrect !");
+            }
+        });
 
         // Charger les commandes depuis les fichiers JSON
         async function loadCommands() {
             try {
-                const htmlResponse = await fetch('commands/html-commands.json');
-                const cssResponse = await fetch('commands/css-commands.json');
-                const jsResponse = await fetch('commands/js-commands.json');
-                const cppResponse = await fetch('commands/cpp-commands.json');
-                const pythonResponse = await fetch('commands/python-commands.json');
+                const htmlResponse = await fetch('html-commands.json');
+                const cssResponse = await fetch('css-commands.json');
+                const jsResponse = await fetch('js-commands.json');
+                const cppResponse = await fetch('cpp-commands.json');
+                const pythonResponse = await fetch('python-commands.json');
 
                 const htmlCommands = await htmlResponse.json();
                 const cssCommands = await cssResponse.json();
@@ -117,7 +91,7 @@
                     Python: pythonCommands
                 };
 
-                renderCommands();
+                renderCommands(); // Afficher les commandes après le chargement
             } catch (error) {
                 console.error("Erreur lors du chargement des commandes :", error);
             }
@@ -151,34 +125,30 @@
             });
         }
 
-        // Ajouter une nouvelle commande
-        document.getElementById('add-command').addEventListener('click', () => {
-            const language = document.getElementById('language').value;
-            const commandName = document.getElementById('command-name').value.trim();
-            const commandCode = document.getElementById('command-code').value.trim();
+        // Ajouter une commande
+        document.getElementById('add-command-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Empêcher l'envoi classique du formulaire
 
-            if (!commandName || !commandCode) {
+            const language = document.getElementById('command-language').value;
+            const name = document.getElementById('command-name').value.trim();
+            const code = document.getElementById('command-code').value.trim();
+
+            if (!name || !code) {
                 alert("Veuillez remplir tous les champs !");
                 return;
             }
 
             const newCommand = {
                 type: language,
-                command: commandName,
-                code: commandCode
+                command: name,
+                code: code
             };
 
-            commands[language].push(newCommand); // Ajouter la commande dans l'objet
-            renderCommands(); // Mettre à jour l'affichage
+            commands[language].push(newCommand); // Ajouter la nouvelle commande
+            renderCommands(); // Rafraîchir l'affichage des commandes
 
-            // Réinitialiser les champs du formulaire
-            document.getElementById('command-name').value = '';
-            document.getElementById('command-code').value = '';
-        });
-
-        // Charger les commandes au chargement de la page
-        document.addEventListener('DOMContentLoaded', () => {
-            loadCommands();
+            document.getElementById('add-command-form').reset(); // Réinitialiser le formulaire
+            alert("Commande ajoutée avec succès !");
         });
     </script>
 </body>
