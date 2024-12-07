@@ -7,6 +7,6 @@
     {
         "type": "Python",
         "command": "Boucle for",
-        "code": "for i in range(10): print(i)"
+        "code": "for i in range(10): print(i)" 
     }
 ]
