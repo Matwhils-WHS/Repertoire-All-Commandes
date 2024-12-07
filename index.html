@@ -30,24 +30,6 @@
         <ul id="command-list" class="command-list"></ul>
     </div>
 
- <!-- Formulaire pour ajouter une commande -->
-        <div class="add-command-container">
-            <h2>Ajouter une Commande</h2>
-            <form id="add-command-form">
-                <select id="command-language">
-                    <option value="HTML">HTML</option>
-                    <option value="CSS">CSS</option>
-                    <option value="JavaScript">JavaScript</option>
-                    <option value="C">C++</option>
-                    <option value="Python">Python</option>
-                </select>
-                <input type="text" id="command-name" placeholder="Nom de la commande" required>
-                <textarea id="command-code" placeholder="Code de la commande" required></textarea>
-                <button type="submit">Ajouter</button>
-            </form>
-        </div>
-    </div>
-
     <script>
         const commands = {
             HTML: [],
@@ -103,33 +85,6 @@
             return code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        // Ajouter une nouvelle commande
-        document.getElementById('add-command-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const language = document.getElementById('command-language').value;
-            const name = document.getElementById('command-name').value.trim();
-            const code = document.getElementById('command-code').value.trim();
-
-            if (!name || !code) {
-                alert("Veuillez remplir tous les champs !");
-                return;
-            }
-
-            const newCommand = {
-                type: language,
-                command: name,
-                code: code
-            };
-
-            commands[language].push(newCommand);
-            renderCommands(document.getElementById('language-filter').value, document.getElementById('search').value);
-
-            // Réinitialiser le formulaire
-            document.getElementById('add-command-form').reset();
-            alert("Commande ajoutée avec succès !");
-        });
-
         // Gestion des événements pour recherche et filtre
         document.getElementById('search').addEventListener('input', function() {
             renderCommands(document.getElementById('language-filter').value, this.value);
@@ -146,6 +101,17 @@
             console.error("Erreur lors du chargement initial des commandes:", err);
         });
     </script>
+
+    <div class="admin-access container">
+    <button id="admin-button">Accéder à l'administration</button>
+</div>
+
+<script>
+    // Redirection vers la page Admin
+    document.getElementById('admin-button').addEventListener('click', () => {
+        window.location.href = 'Admin.html';
+    });
+</script>
     
 <a href="https://github.com/Matwhils-WHS/Repertoire-All-Commandes">
     Github
