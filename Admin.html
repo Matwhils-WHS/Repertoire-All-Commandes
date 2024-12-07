@@ -98,7 +98,7 @@
             for (const lang in commands) {
                 commands[lang].forEach(c => {
                     const listItem = document.createElement('li');
-                    listItem.innerHTML = `<strong>${c.type}:</strong> ${c.command} <button class="delete-button">Supprimer</button>`;
+                    listItem.innerHTML = `<strong>${c.type}:</strong> <p class="command-item">${c.command}</p> <button class="delete-button">Supprimer</button>`;
                     commandList.appendChild(listItem);
 
                     // Supprimer une commande
