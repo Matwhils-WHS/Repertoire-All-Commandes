@@ -30,7 +30,25 @@
         <ul id="command-list" class="command-list"></ul>
     </div>
 
-<script>
+ <!-- Formulaire pour ajouter une commande -->
+        <div class="add-command-container">
+            <h2>Ajouter une Commande</h2>
+            <form id="add-command-form">
+                <select id="command-language">
+                    <option value="HTML">HTML</option>
+                    <option value="CSS">CSS</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="C">C++</option>
+                    <option value="Python">Python</option>
+                </select>
+                <input type="text" id="command-name" placeholder="Nom de la commande" required>
+                <textarea id="command-code" placeholder="Code de la commande" required></textarea>
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
         const commands = {
             HTML: [],
             CSS: [],
