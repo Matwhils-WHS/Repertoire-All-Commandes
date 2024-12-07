@@ -2,7 +2,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #362424 !important;
+    background-color: #362424;
+    !important
 }
 
 .container {
